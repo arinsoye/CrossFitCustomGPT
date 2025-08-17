@@ -1,0 +1,79 @@
+openapi: 3.1.0
+info:
+  title: Williamsburg CF Gym API
+  version: "1.0"
+servers:
+  - url: https://api.yourgym.com
+paths:
+  /v1/gym/profile:
+    get:
+      operationId: getGymProfile
+      summary: Equipment, lanes, class caps, open gym windows
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  class_cap: { type: integer }
+                  equipment:
+                    type: object
+                    additionalProperties: { type: integer }
+                  lanes: { type: integer }
+  /v1/programming/cycle:
+    get:
+      operationId: getCycle
+      summary: Current cycle metadata (themes, benchmarks, lift progressions)
+      parameters:
+        - in: query
+          name: week
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  week: { type: integer }
+                  theme: { type: string }
+                  benchmarks: { type: array, items: { type: string } }
+  /v1/members/notes:
+    get:
+      operationId: getMemberNotes
+      summary: Aggregated considerations (injury trends, common limits)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  common_limits:
+                    type: array
+                    items: { type: string }
+  /v1/calendar/classes:
+    get:
+      operationId: getClassSchedule
+      summary: Returns today’s classes with signups to tailor equipment math
+      parameters:
+        - in: query
+          name: date
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    start_iso: { type: string, format: date-time }
+                    signup_count: { type: integer }
+                    coach: { type: string }
